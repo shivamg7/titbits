@@ -86,15 +86,25 @@
         createMessageItem(sender, message);
       })
       
+      var notificationTimeout = -1;
+      var bubble;
       socket.on('typing', (user) => {
         console.log(`${user} is typing`);
-        let bubble = document.getElementById('notification');
-        // let notification = document.createElement('DIV');
-        bubble.innerHTML = `
-        <div class="dot-typing"></div> <span class="typing-text">${user}</span>
-        `;
-        // bubble.appendChild(notification);
-        setTimeout(function(){bubble.innerHTML=""}, 10000);
+        if (notificationTimeout === -1) {
+          console.log("Was null", notificationTimeout);
+          bubble = document.getElementById('notification');
+          
+          bubble.innerHTML = `
+          <div class="dot-typing"></div> <span class="typing-text">${user}</span>
+          `;;
+
+          notificationTimeout = setTimeout(function(){bubble.innerHTML=""; notificationTimeout=-1;}, 3000);
+        } else {
+          console.log("Was not null", notificationTimeout);
+          clearTimeout(notificationTimeout);
+          notificationTimeout = setTimeout(function(){bubble.innerHTML=""; notificationTimeout=-1;}, 3000);
+        }
+        
       })
 
     </script>
