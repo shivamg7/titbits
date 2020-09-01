@@ -2,15 +2,83 @@
 <html>
   <head>
     <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel='stylesheet' href='/stylesheets/materialize.css' />
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <div class="container">
-        DEPLOYMENT SUCCESS!!
+      <ul class="collection messages" id="messages-container">
+
+      </ul>
+
+
+      <div class="row">
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="textarea1" type="text" class="materialize-textarea"></input>
+              <label for="textarea1">...</label>
+              <button class="btn waves-effect waves-light"  onclick="sendMessage()">Send
+                <i class="material-icons right">send</i>
+              </button>
+            </div>
+            
+          </div>
+          
+        
+      </div>
+        
+    
+        
     </div>
-
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-      </script>
+      var socket = io();
+      var d_sender = "Shivam_g12";
+      var d_msg = "This is a dummy message";
 
+
+      document.getElementById("textarea1").addEventListener("keydown", event => {
+          if (event.keyCode === 13) {
+            sendMessage();
+          }
+      });
+
+      function updateScroll(){
+        var element = document.getElementById("messages-container");
+        element.scrollTop = element.scrollHeight;
+      }
+
+      function createMessageItem(user, msg) {
+        const markup = `
+          <img src="https://ui-avatars.com/api/?name=${user}" alt="" class="circle">
+          <span class="title">${user}</span>
+          <span class="message">
+            ${msg}
+          </span>
+        `;
+        var msgItem = document.createElement("LI");
+        msgItem.className = "collection-item avatar";
+        msgItem.innerHTML = markup;
+        document.getElementById("messages-container").appendChild(msgItem);
+        updateScroll();
+      }
+
+      function sendMessage() {   
+        var message = document.getElementById("textarea1").value;
+        document.getElementById("textarea1").value = "";
+        console.log(`Sending message...${message}`);
+        socket.emit("push", message);
+      }
+
+      socket.on('broadcast', function(data){
+        var sender = data.split("$")[0];
+        var message = data.split("$")[1];
+        console.log(`${sender} --- ${message}`);
+        createMessageItem(sender, message);
+      })
+
+    </script>
+    <script type="text/javascript" src="js/materialize.js"></script> 
   </body>
 </html>
