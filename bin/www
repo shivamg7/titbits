@@ -32,7 +32,7 @@ var faker = require('faker');
  io.on('connection', (socket) => {
 
   socket.nickname = faker.internet.userName();
-  socket.emit('broadcast', ''.concat("Admin", "$", socket.nickname , " has joined the conversation"));
+  io.emit('broadcast', ''.concat("Admin", "$", socket.nickname , " has joined the conversation"));
 
    console.log(`${socket.nickname} connected!`);
    socket.on('disconnect', () => {
@@ -42,6 +42,11 @@ var faker = require('faker');
    socket.on("push", (msg) => {
      console.log(`Received message from ${socket.nickname} -- ${msg}`);
      io.emit('broadcast', ''.concat(socket.nickname, '$', msg));
+   });
+
+   socket.on('typing', () => {
+     console.log(`${socket.nickname} is typing...`);
+     socket.broadcast.emit('typing', `${socket.nickname}`);
    });
 
  })

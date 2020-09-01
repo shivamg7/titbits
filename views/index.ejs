@@ -5,27 +5,28 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel='stylesheet' href='/stylesheets/materialize.css' />
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/three-dots.css">
   </head>
   <body>
     <div class="container">
       <ul class="collection messages" id="messages-container">
 
+        
       </ul>
-
+      <div class="notification" id="notification">
+        
+      </div>
 
       <div class="row">
           <div class="row">
             <div class="input-field col s12">
               <input id="textarea1" type="text" class="materialize-textarea"></input>
-              <label for="textarea1">...</label>
+              <label for="textarea1" id="textlabel">...</label>
               <button class="btn waves-effect waves-light"  onclick="sendMessage()">Send
                 <i class="material-icons right">send</i>
               </button>
-            </div>
-            
-          </div>
-          
-        
+            </div>        
+          </div>        
       </div>
         
     
@@ -42,6 +43,7 @@
           if (event.keyCode === 13) {
             sendMessage();
           }
+          socket.emit('typing', 'DUMMY');
       });
 
       function updateScroll(){
@@ -52,13 +54,14 @@
       function createMessageItem(user, msg) {
         const markup = `
           <img src="https://ui-avatars.com/api/?name=${user}" alt="" class="circle">
-          <span class="title">${user}</span>
-          <span class="message">
+          <span class="username title">~${user}</span></br>
+          <span class="message message-body">
             ${msg}
           </span>
         `;
         var msgItem = document.createElement("LI");
         msgItem.className = "collection-item avatar";
+        msgItem.id = 'custom-id';
         msgItem.innerHTML = markup;
         document.getElementById("messages-container").appendChild(msgItem);
         updateScroll();
@@ -66,6 +69,11 @@
 
       function sendMessage() {   
         var message = document.getElementById("textarea1").value;
+        if (message.length === 0) {
+          document.getElementById('textlabel').innerHTML = "No message to send!";
+          return;
+        }
+        document.getElementById('textlabel').innerHTML = "...";
         document.getElementById("textarea1").value = "";
         console.log(`Sending message...${message}`);
         socket.emit("push", message);
@@ -76,6 +84,17 @@
         var message = data.split("$")[1];
         console.log(`${sender} --- ${message}`);
         createMessageItem(sender, message);
+      })
+      
+      socket.on('typing', (user) => {
+        console.log(`${user} is typing`);
+        let bubble = document.getElementById('notification');
+        // let notification = document.createElement('DIV');
+        bubble.innerHTML = `
+        <div class="dot-typing"></div> <span class="typing-text">${user}</span>
+        `;
+        // bubble.appendChild(notification);
+        setTimeout(function(){bubble.innerHTML=""}, 10000);
       })
 
     </script>

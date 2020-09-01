@@ -2,3 +2,15 @@
     max-height: 25rem;
     overflow: auto;
 }
+
+.message-body{
+    font-size: 20px;
+}
+
+.username {
+    font-size: 12px;
+}
+
+.typing-text{
+    padding-left: 38px;
+}
