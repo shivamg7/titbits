@@ -68,7 +68,7 @@
       }
 
       function sendMessage() {   
-        var message = document.getElementById("textarea1").value;
+        var message = document.getElementById("textarea1").value.trim();
         if (message.length === 0) {
           document.getElementById('textlabel').innerHTML = "No message to send!";
           return;
