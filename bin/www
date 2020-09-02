@@ -37,12 +37,12 @@ var faker = require('faker');
    console.log(`${socket.nickname} connected!`);
    socket.on('disconnect', () => {
     console.log(`${socket.nickname} disconnected!`)
-    socket.broadcast.emit('typing', `${socket.nickname}`);
+    socket.broadcast.emit('broadcast', ''.concat("titbits-chatbot", "$", socket.nickname , " has joined the conversation"));
    });
 
    socket.on("push", (msg) => {
      console.log(`Received message from ${socket.nickname} -- ${msg}`);
-     io.emit('broadcast', ''.concat("titbits-chatbot", "$", socket.nickname , " has left the conversation"));
+     io.emit('broadcast', ''.concat(socket.nickname, '$', msg));
    });
 
    socket.on('typing', () => {

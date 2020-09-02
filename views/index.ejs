@@ -52,8 +52,13 @@
       }
 
       function createMessageItem(user, msg) {
+        if (user === "titbits-chatbot") {
+          var sprite = "bottts";
+        } else {
+          var sprite = "human";
+        }
         const markup = `
-          <img src="https://ui-avatars.com/api/?name=${user}" alt="" class="circle">
+          <img src="https://avatars.dicebear.com/api/${sprite}/${user}.svg?mood[]=happy" alt="" class="circle">
           <span class="username title">~${user}</span></br>
           <span class="message message-body">
             ${msg}
@@ -108,6 +113,7 @@
       })
 
     </script>
+    
     <script type="text/javascript" src="js/materialize.js"></script> 
   </body>
 </html>
